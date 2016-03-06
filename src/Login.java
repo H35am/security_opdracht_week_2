@@ -5,34 +5,48 @@
 import com.sun.org.apache.xpath.internal.SourceTree;
 import sun.plugin2.message.Message;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Login {
 
-    public static void main(String[] Args) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String[] getUserData(String f, String username) throws IOException {
+        String[] ud = {"",""};
+
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        String line = null;
+        while ((line = br.readLine()) != null)
+        {
+            ud = line.split(",");
+            if(ud[0].equals(username)){
+                break;
+            }
+
+        }
+
+        return ud;
+    }
 
 
-        Scanner scan = new Scanner (new File(files/login.txt));
-        System.out.println(scan);
-        //String user = scan.nextLine();
-        //String pass = scan.nextLine(); // looks at selected file in scan
 
-        BufferedReader testingDoc = getFileReader("files/login.txt");
+    public static void main(String[] Args) throws NoSuchAlgorithmException, IOException {
 
-
+        String filename = "files/login.txt";
 
         Scanner keyboard = new Scanner (System.in);
         String inpUser = keyboard.nextLine();
         String inpPass = keyboard.nextLine(); // gets input from user
+
+        // get uderdata from the file
+        String[] userdata = getUserData(filename, inpUser);
+
+
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         String text = inpUser+inpPass;
@@ -40,16 +54,15 @@ public class Login {
 
         byte[] digest = md.digest();
 
-        String s = String.format("%064x", new java.math.BigInteger(1, digest));
-        System.out.println(s);
+        String sha = String.format("%064x", new java.math.BigInteger(1, digest));
 
-        System.out.println(text);
-
-       /*if (inpUser.equals(s) && inpPass.equals()) {
-            System.out.print("your login message");
-       } else {
-           System.out.print("your error message");
-       }*/
+        if (inpUser.equals(userdata[0]) && sha.equals(userdata[1])) {
+            System.out.print("Wellcome "+inpUser);
+        } else {
+           System.out.print("Login failure ...");
+            System.out.println(inpUser + " - " +userdata[0] );
+            System.out.println(sha + " - " +userdata[1] );
+        }
 
     }
 
